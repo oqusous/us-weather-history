@@ -92,7 +92,7 @@ def fig2(df, g_name):
     
     figSignal = go.Figure(data=[recorded, average, actual])
     
-    figSignal.update_layout( margin=dict(l=20, r=20, t=20, b=20), width=1200, height=600, 
+    figSignal.update_layout( margin=dict(l=20, r=20, t=20, b=20), width=950, height=600, 
                         xaxis=go.layout.XAxis(linecolor = 'black', linewidth = 1, mirror = True,fixedrange = False, rangeslider={'visible':False},
                                               showticklabels=True, tickvals=pd.date_range('2014-07', '2015-06', freq='MS'),
                         title_text='Recorded vs Actual Temperature at '+cities[g_name]))
@@ -103,13 +103,16 @@ def fig3(df, g_name):
     df_p = df.copy(deep=True)
     df_p = df_p[['date', 'actual_precipitation','average_precipitation','record_precipitation']]
     df_p = df_p[df['GroupName']==g_name]
-    fig, ax = plt.subplots(1,1,figsize=(15,12))
-    sns.lineplot(data=df_p, linewidth=2.5, ax=ax)
+    fig, ax = plt.subplots(1,1, figsize=(19,12))
+    ax.plot(df_p['date'], df_p['actual_precipitation'], label = 'actual_precipitation')
+    ax.plot(df_p['date'], df_p['average_precipitation'], label= 'average_precipitation')
+    ax.plot(df_p['date'], df_p['record_precipitation'], label = 'record_precipitation')
+
     ax.set_title("Recorded, Actual and Average Percipitation from Jul. 2014 to Jun. 2015 in "+cities[g_name])
-    ax.legend(frameon=False)
     ax.set_ylabel("Percipitation (inches)")
     ax.set_xlabel("Date")
-    plt.show()
+    ax.legend(frameon=False)
+
     return fig
 
 #loading datarames
@@ -133,7 +136,7 @@ st.write('You selected:', box1)
 
 
 # plotting matplotlib/sns graphs
-st.write('The plot below explores the distribution of the minimum and maximum measured temperature for each month. It shows a greater dispersion of in the colder months when compared with the months closer in the summer season.')
+st.write("The plot below explores the distribution of the minimum and maximum measured temperature for each month. It shows a greater dispersion of in the colder months when compared with the months closer in the summer season.")
 st.pyplot(fig1(df, ['actual_min_temp', 'actual_max_temp'], 'date', box1))
 
 
@@ -142,7 +145,7 @@ st.markdown('\n')
 st.write("The plot below shows a candle chart with maximum and minimum temperature represented in each stick. The grey graph is the historical minimum and maximum values, these are compared with the overall minimum and maximum average and measured on-the-day temperatures represented by the red and cyan graphs respectively. When the cyan graphs breaks through the grey boarder it means the a new record minimum or maximum temperature was measured on that day.")
 st.plotly_chart(fig2(df, box1))
 
-st.write("The plot below shows the average, historical record and measured on-the-day rainfall in the selected city")
+st.write("The plot below shows the daily average, historical record and measured on-the-day rainfall for the selected city. If the 'actual' line (blue color) breaks the 'record' green line, then a new historical record is set")
 st.pyplot(fig3(df, box1))
 
 st.markdown('\n')
